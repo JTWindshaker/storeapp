@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:storeapp/app/login/presentation/pages/login_page.dart';
 import 'package:storeapp/app/signup/presentation/pages/signup_page.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class MainApp extends StatelessWidget {
   const MainApp({super.key});
@@ -19,9 +20,9 @@ class MainApp extends StatelessWidget {
       ],
     );
 
-    return SafeArea(
-      bottom: false,
-      child: MaterialApp.router(routerConfig: router),
+    return MaterialApp.router(
+      theme: ThemeData(textTheme: GoogleFonts.patrickHandTextTheme()),
+      routerConfig: router,
     );
   }
 }
