@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:storeapp/app/home/presentation/pages/home_page.dart';
 import 'package:storeapp/app/login/presentation/pages/login_page.dart';
 import 'package:storeapp/app/signup/presentation/pages/signup_page.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -16,6 +17,11 @@ class MainApp extends StatelessWidget {
           path: "/sign-up",
           name: "sign-up",
           builder: (_, _) => const SignUpPage(),
+        ),
+        GoRoute(
+          path: "/home",
+          name: "home",
+          builder: (_, _) => const HomePage(),
         ),
       ],
     );
