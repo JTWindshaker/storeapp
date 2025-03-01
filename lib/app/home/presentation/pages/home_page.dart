@@ -36,8 +36,22 @@ class _HomePageState extends State<HomePage> {
             SizedBox(width: 16.0),
           ],
         ),
-        // Si se está metido en un BlocProvider, se recomienda extraer el body en un widget
         body: ProductsListWidget(),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            GoRouter.of(context).pushNamed("form-product");
+          },
+          backgroundColor: Color(0xFFEF1D26),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(50),
+          ),
+          elevation: 8,
+          child: Icon(
+            Icons.add,
+            color: Colors.white,
+            size: 28,
+          ), // Ícono más visible
+        ),
       ),
     );
   }
@@ -53,16 +67,9 @@ class ProductsListWidget extends StatefulWidget {
 
 class _ProductsListWidgetState extends State<ProductsListWidget> {
   @override
-  void initState() {
-    super.initState();
-
-    final bloc = context.read<HomeBloc>();
-    bloc.add(GetProductsEvent());
-  }
-
-  @override
   Widget build(BuildContext context) {
     final bloc = context.read<HomeBloc>();
+    bloc.add(GetProductsEvent());
 
     // El block consumer es la fusión del bloc builder y listener
     return BlocConsumer<HomeBloc, HomeState>(
@@ -101,6 +108,7 @@ class _ProductsListWidgetState extends State<ProductsListWidget> {
           case LoadingState():
             return Center(
               child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   CircularProgressIndicator(),
                   SizedBox(height: 20.0),
@@ -135,6 +143,11 @@ class ProductItemWidget extends StatelessWidget {
     final bloc = context.read<HomeBloc>();
 
     return InkWell(
+      onTap: () {
+        GoRouter.of(
+          context,
+        ).pushNamed("form-product-u", pathParameters: {"id": product.id});
+      },
       onLongPress: () {
         showDialog(
           context: context,

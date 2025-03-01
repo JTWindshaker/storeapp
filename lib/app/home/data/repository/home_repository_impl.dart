@@ -1,25 +1,35 @@
-import 'dart:math';
-
+import 'package:storeapp/app/core/data/remote/services/product_service.dart';
 import 'package:storeapp/app/core/domain/entity/product_entity.dart';
 import 'package:storeapp/app/home/domain/repository/home_repository.dart';
 
 class HomeRepositoryImpl implements HomeRepository {
+  final ProductService productService;
+
+  HomeRepositoryImpl({required this.productService});
+
   @override
-  bool deleteProduct(String id) {
-    return Random().nextBool();
+  Future<bool> deleteProduct(String id) async {
+    try {
+      return productService.delete(id);
+    } catch (e) {
+      throw (Exception("Error: $e"));
+    }
   }
 
   @override
-  List<ProductEntity> getProducts() {
-    return [
-      ProductEntity(
-        id: "1",
-        name: "TV",
-        description: "Descripcion del TV",
-        image:
-            "https://img.freepik.com/vector-premium/logotipo-productos-naturales_1222-726.jpg",
-        price: 12000,
-      ),
-    ];
+  Future<List<ProductEntity>> getProducts() async {
+    final List<ProductEntity> products = [];
+
+    try {
+      final response = await productService.getAll();
+
+      for (var obj in response) {
+        products.add(obj.toEntity());
+      }
+    } catch (e) {
+      throw (Exception("Error: $e"));
+    }
+
+    return products;
   }
 }

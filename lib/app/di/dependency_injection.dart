@@ -1,4 +1,11 @@
+import 'package:dio/dio.dart';
 import 'package:get_it/get_it.dart';
+import 'package:storeapp/app/core/data/remote/services/product_service.dart';
+import 'package:storeapp/app/form_product/data/repository/form_product_repository_impl.dart';
+import 'package:storeapp/app/form_product/domain/repository/form_product_repository.dart';
+import 'package:storeapp/app/form_product/domain/use_case/add_product_use_case.dart';
+import 'package:storeapp/app/form_product/domain/use_case/get_product_use_case.dart';
+import 'package:storeapp/app/form_product/presentation/bloc/form_product_bloc.dart';
 import 'package:storeapp/app/home/data/repository/home_repository_impl.dart';
 import 'package:storeapp/app/home/domain/repository/home_repository.dart';
 import 'package:storeapp/app/home/domain/use_case/delete_product_use_case.dart';
@@ -15,7 +22,16 @@ final class DependencyInjection {
 
   static final serviceLocator = GetIt.instance;
 
+  //Inyección de DIO
   static setup() {
+    //Inyección del Dio
+    serviceLocator.registerSingleton<Dio>(Dio());
+
+    //Inyección del service
+    serviceLocator.registerFactory<ProductService>(
+      () => ProductService(dio: serviceLocator.get()),
+    );
+
     // Inyección del Login
     //Inyección del Repositorio
     serviceLocator.registerFactory<LoginRepository>(
@@ -34,7 +50,9 @@ final class DependencyInjection {
 
     // Inyección del Home
     //Inyección del Repositorio
-    serviceLocator.registerFactory<HomeRepository>(() => HomeRepositoryImpl());
+    serviceLocator.registerFactory<HomeRepository>(
+      () => HomeRepositoryImpl(productService: serviceLocator.get()),
+    );
 
     //Inyección del Caso de uso
     serviceLocator.registerFactory<GetProductsUseCase>(
@@ -51,6 +69,29 @@ final class DependencyInjection {
       () => HomeBloc(
         deleteProductUseCase: serviceLocator.get(),
         getProductsUseCase: serviceLocator.get(),
+      ),
+    );
+
+    // Inyección del Form Product
+    //Inyección del Repositorio
+    serviceLocator.registerFactory<FormProductRepository>(
+      () => FormProductRepositoryImpl(productService: serviceLocator.get()),
+    );
+
+    //Inyección del Caso de uso
+    serviceLocator.registerFactory<AddProductUseCase>(
+      () => AddProductUseCase(formProductRepository: serviceLocator.get()),
+    );
+
+    serviceLocator.registerFactory<GetProductUseCase>(
+      () => GetProductUseCase(formProductRepository: serviceLocator.get()),
+    );
+
+    //Inyección del Bloc
+    serviceLocator.registerFactory<FormProductBloc>(
+      () => FormProductBloc(
+        addProductUseCase: serviceLocator.get(),
+        getProductUseCase: serviceLocator.get(),
       ),
     );
   }

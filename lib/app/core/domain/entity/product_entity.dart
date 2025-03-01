@@ -1,3 +1,4 @@
+import 'package:storeapp/app/core/data/remote/dto/product_data_model.dart';
 import 'package:storeapp/app/home/presentation/model/product_model.dart';
 
 final class ProductEntity {
@@ -21,6 +22,16 @@ final class ProductEntity {
       name: name,
       description: description,
       urlImage: image,
+      price: price,
+    );
+  }
+
+  ProductDataModel toProductDataModel() {
+    return ProductDataModel(
+      id: id,
+      name: name,
+      description: description,
+      imageURL: image,
       price: price,
     );
   }

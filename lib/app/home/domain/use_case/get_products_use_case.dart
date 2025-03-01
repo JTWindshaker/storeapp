@@ -1,3 +1,4 @@
+import 'package:storeapp/app/core/domain/entity/product_entity.dart';
 import 'package:storeapp/app/home/domain/repository/home_repository.dart';
 import 'package:storeapp/app/home/presentation/model/product_model.dart';
 
@@ -6,21 +7,23 @@ class GetProductsUseCase {
 
   GetProductsUseCase({required this.homeRepository});
 
-  List<ProductModel> invoke() {
-    // final List<ProductModel> products = [
-    //   ProductModel(
-    //     id: "1",
-    //     name: "Televisor",
-    //     description: "Gran televisor de 42''",
-    //     urlImage:
-    //         "https://img.freepik.com/vector-premium/logotipo-productos-naturales_1222-726.jpg",
-    //     price: 12000,
-    //   ),
-    // ];
+  Future<List<ProductModel>> invoke() async {
+    // final List<ProductModel> products = [];
 
-    return homeRepository
-        .getProducts()
-        .map((item) => item.toProductModel())
-        .toList();
+    // try {
+    //   final result = await homeRepository.getProducts();
+    //   for (var element in result) {
+    //     products.add(element.toProductModel());
+    //   }
+    // } catch (e) {
+    //   throw (Exception("Error: $e"));
+    // }
+
+    try {
+      List<ProductEntity> products = await homeRepository.getProducts();
+      return products.map((item) => item.toProductModel()).toList();
+    } catch (e) {
+      throw (Exception("Error: $e"));
+    }
   }
 }

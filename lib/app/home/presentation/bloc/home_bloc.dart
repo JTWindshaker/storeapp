@@ -17,14 +17,18 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     on<DeleteProductEvent>(_deleteProductEvent);
   }
 
-  void _getProductsEvent(GetProductsEvent event, Emitter<HomeState> emit) {
+  void _getProductsEvent(
+    GetProductsEvent event,
+    Emitter<HomeState> emit,
+  ) async {
+    print("😍😍😍😍😍😍😍😍 Entra al cargar 😍😍😍😍😍😍😍😍 ");
     late HomeState newState;
 
     try {
       newState = LoadingState();
       emit(newState);
 
-      final List<ProductModel> result = getProductsUseCase.invoke();
+      final List<ProductModel> result = await getProductsUseCase.invoke();
       // throw (Exception());
       if (result.isEmpty) {
         newState = EmptyState();
@@ -41,17 +45,32 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     emit(newState);
   }
 
-  void _deleteProductEvent(DeleteProductEvent event, Emitter<HomeState> emit) {
+  void _deleteProductEvent(
+    DeleteProductEvent event,
+    Emitter<HomeState> emit,
+  ) async {
     late HomeState newState;
 
     try {
-      newState = LoadingState();
-      emit(newState);
+      // newState = LoadingState();
+      // emit(newState);
 
-      final bool result = deleteProductUseCase.invoke(event.id);
+      final bool result = await deleteProductUseCase.invoke(event.id);
 
       if (result) {
-        _getProductsEvent(GetProductsEvent(), emit);
+        // _getProductsEvent(GetProductsEvent(), emit);
+        newState = LoadingState();
+        emit(newState);
+
+        final List<ProductModel> result = await getProductsUseCase.invoke();
+        // throw (Exception());
+        if (result.isEmpty) {
+          newState = EmptyState();
+        } else {
+          newState = LoadDataState(
+            model: state.model.copyWith(products: result),
+          );
+        }
       } else {
         throw (Exception());
       }

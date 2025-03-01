@@ -5,7 +5,12 @@ class DeleteProductUseCase {
 
   DeleteProductUseCase({required this.homeRepository});
 
-  bool invoke(String id) {
-    return homeRepository.deleteProduct(id);
+  // Si no se coloca async, es porque no dependo de esperar nada.
+  Future<bool> invoke(String id) {
+    try {
+      return homeRepository.deleteProduct(id);
+    } catch (e) {
+      throw (Exception("Error: $e"));
+    }
   }
 }

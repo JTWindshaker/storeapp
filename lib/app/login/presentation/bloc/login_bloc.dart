@@ -49,8 +49,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
         message: "Error al Iniciar Sesión",
       );
     }
-
-    print(result ? "Correcto" : "Falló");
+    
     emit(newState);
   }
 }
