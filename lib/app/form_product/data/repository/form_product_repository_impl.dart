@@ -8,7 +8,7 @@ class FormProductRepositoryImpl implements FormProductRepository {
   FormProductRepositoryImpl({required this.productService});
 
   @override
-  Future<bool> addProduct(ProductEntity productEntity) async {
+  Future<bool> addProduct(ProductEntity productEntity) {
     try {
       return productService.add(productEntity.toProductDataModel());
     } catch (e) {

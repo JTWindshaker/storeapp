@@ -77,25 +77,6 @@ class FormProductBloc extends Bloc<FormProductEvent, FormProductState> {
     GetProductEvent event,
     Emitter<FormProductState> emit,
   ) async {
-    // late final FormProductState newState;
-
-    // try {
-    //   final bool result = await addProductUseCase.invoke(state.model);
-
-    //   if (result) {
-    //     newState = SubmitSuccessState(model: state.model);
-    //   } else {
-    //     throw (Exception());
-    //   }
-    // } catch (e) {
-    //   newState = SubmitErrorState(
-    //     model: state.model,
-    //     message: "Error al Guardar el Producto",
-    //   );
-    // }
-
-    // emit(newState);
-
     final result = await getProductUseCase.invoke(event.id);
     final newState = DataUpdateState(model: result);
 

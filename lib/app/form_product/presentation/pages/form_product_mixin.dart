@@ -1,4 +1,4 @@
-mixin FormProductLoginMixin {
+mixin FormProductMixin {
   String? validatePassword(value) {
     value ??= "";
     if (value.length < 8) {

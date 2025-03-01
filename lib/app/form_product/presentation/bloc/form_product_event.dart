@@ -21,5 +21,5 @@ final class SubmitEvent extends FormProductEvent {
 
 final class GetProductEvent extends FormProductEvent {
   final String id;
-  GetProductEvent({required this.id});
+  GetProductEvent(this.id);
 }

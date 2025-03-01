@@ -11,7 +11,7 @@ class GetProductUseCase {
       final data = await formProductRepository.getProduct(id);
       
       return ProductFormModel(
-        id: data.id,
+        id: id,
         name: data.name,
         price: data.price.toString(),
         urlImage: data.image,

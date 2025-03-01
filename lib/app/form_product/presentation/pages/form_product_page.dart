@@ -7,7 +7,7 @@ import 'package:storeapp/app/di/dependency_injection.dart';
 import 'package:storeapp/app/form_product/presentation/bloc/form_product_bloc.dart';
 import 'package:storeapp/app/form_product/presentation/bloc/form_product_event.dart';
 import 'package:storeapp/app/form_product/presentation/bloc/form_product_state.dart';
-import 'package:storeapp/app/form_product/presentation/pages/form_product_login_mixin.dart';
+import 'package:storeapp/app/form_product/presentation/pages/form_product_mixin.dart';
 
 class FormProductPage extends StatelessWidget {
   final String? id;
@@ -22,7 +22,7 @@ class FormProductPage extends StatelessWidget {
         appBar: AppBar(
           title: Text(id == null ? "Agregar Producto" : "Editar Producto"),
         ),
-        body: BodyLoginWidget(id: id),
+        body: BodyLoginWidget(id),
       ),
     );
   }
@@ -30,21 +30,21 @@ class FormProductPage extends StatelessWidget {
 
 class BodyLoginWidget extends StatefulWidget {
   final String? id;
-  const BodyLoginWidget({super.key, this.id});
+  const BodyLoginWidget(this.id, {super.key});
 
   @override
   State<BodyLoginWidget> createState() => _BodyLoginWidgetState();
 }
 
 class _BodyLoginWidgetState extends State<BodyLoginWidget>
-    with FormProductLoginMixin {
+    with FormProductMixin {
   final keyForm = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
     final bloc = context.read<FormProductBloc>();
     if (widget.id != null) {
-      bloc.add(GetProductEvent(id: widget.id!));
+      bloc.add(GetProductEvent(widget.id!));
     }
 
     TextEditingController nameField = TextEditingController();
