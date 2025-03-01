@@ -12,14 +12,14 @@ class MainApp extends StatelessWidget {
   Widget build(BuildContext context) {
     final router = GoRouter(
       routes: [
-        GoRoute(path: "/", name: "login", builder: (_, _) => const LoginPage()),
+        GoRoute(path: "/login", name: "login", builder: (_, _) => const LoginPage()),
         GoRoute(
           path: "/sign-up",
           name: "sign-up",
           builder: (_, _) => const SignUpPage(),
         ),
         GoRoute(
-          path: "/home",
+          path: "/",
           name: "home",
           builder: (_, _) => const HomePage(),
         ),
