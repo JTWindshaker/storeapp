@@ -1,16 +1,19 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:storeapp/app/form_product/domain/use_case/add_product_use_case.dart';
 import 'package:storeapp/app/form_product/domain/use_case/get_product_use_case.dart';
+import 'package:storeapp/app/form_product/domain/use_case/update_product_use_case.dart';
 import 'package:storeapp/app/form_product/presentation/bloc/form_product_event.dart';
 import 'package:storeapp/app/form_product/presentation/bloc/form_product_state.dart';
 
 class FormProductBloc extends Bloc<FormProductEvent, FormProductState> {
   final AddProductUseCase addProductUseCase;
   final GetProductUseCase getProductUseCase;
+  final UpdateProductUseCase updateProductUseCase;
 
   FormProductBloc({
     required this.addProductUseCase,
     required this.getProductUseCase,
+    required this.updateProductUseCase,
   }) : super(InitialState()) {
     on<NameChangedEvent>(_nameChangedEvent);
     on<PriceChangedEvent>(_priceChangedEvent);
@@ -56,7 +59,13 @@ class FormProductBloc extends Bloc<FormProductEvent, FormProductState> {
     late final FormProductState newState;
 
     try {
-      final bool result = await addProductUseCase.invoke(state.model);
+      final bool result;
+      print("🤣🤣🤣🤣🤣🤣 ${state.model.id}");
+      if (state.model.id == "") {
+        result = await addProductUseCase.invoke(state.model);
+      } else {
+        result = await updateProductUseCase.invoke(state.model);
+      }
 
       if (result) {
         newState = SubmitSuccessState(model: state.model);
@@ -66,10 +75,14 @@ class FormProductBloc extends Bloc<FormProductEvent, FormProductState> {
     } catch (e) {
       newState = SubmitErrorState(
         model: state.model,
-        message: "Error al Guardar el Producto",
+        message:
+            state.model.id == ""
+                ? "Error al Guardar el Producto"
+                : "Error al Actualizar el Producto",
       );
     }
 
+    print("👌👌👌👌👌👌 $newState");
     emit(newState);
   }
 

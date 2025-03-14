@@ -25,4 +25,13 @@ class FormProductRepositoryImpl implements FormProductRepository {
       throw (Exception("Error: $e"));
     }
   }
+
+  @override
+  Future<bool> updateProduct(ProductEntity data) {
+    try {
+      return productService.update(data.toProductDataModel());
+    } catch (e) {
+      throw (Exception("Error: $e"));
+    }
+  }
 }

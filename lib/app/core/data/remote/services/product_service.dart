@@ -3,9 +3,7 @@ import 'package:storeapp/app/core/data/remote/dto/product_data_model.dart';
 
 final class ProductService {
   final Dio dio; // clientHTTP
-  // final String _baseUrl = "https://storeapp-37369-default-rtdb.firebaseio.com";
-  final String _baseUrl =
-      "https://storeappdamo2024-default-rtdb.firebaseio.com";
+  final String _baseUrl = "https://storeapp-37369-default-rtdb.firebaseio.com";
 
   ProductService({required this.dio});
 
@@ -72,5 +70,19 @@ final class ProductService {
     }
 
     return product;
+  }
+
+  Future<bool> update(ProductDataModel productDataModel) async {
+    try {
+      await dio.patch(
+        "$_baseUrl/products/${productDataModel.id}.json",
+        data: productDataModel.toJson(),
+        options: Options(headers: {"Content-Type": "application/json"}),
+      );
+    } catch (e) {
+      throw (Exception("Error: $e"));
+    }
+
+    return true;
   }
 }

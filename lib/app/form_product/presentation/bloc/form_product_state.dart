@@ -8,7 +8,15 @@ sealed class FormProductState {
 
 final class InitialState extends FormProductState {
   InitialState()
-    : super(model: ProductFormModel(id: "", name: "", price: "", urlImage: ""));
+    : super(
+        model: ProductFormModel(
+          id: "",
+          name: "",
+          price: "",
+          urlImage:
+              "https://cdn.shopify.com/s/files/1/0070/7032/articles/product_20research.png?v=1729266020",
+        ),
+      );
 }
 
 final class DataUpdateState extends FormProductState {

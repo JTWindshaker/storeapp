@@ -8,7 +8,7 @@ class HomeRepositoryImpl implements HomeRepository {
   HomeRepositoryImpl({required this.productService});
 
   @override
-  Future<bool> deleteProduct(String id) async {
+  Future<bool> deleteProduct(String id) {
     try {
       return productService.delete(id);
     } catch (e) {

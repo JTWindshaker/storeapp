@@ -53,11 +53,14 @@ class _BodyLoginWidgetState extends State<BodyLoginWidget>
 
     return BlocListener<FormProductBloc, FormProductState>(
       listener: (context, state) {
+        print("👌👌👌DESDE PAGE👌👌👌 $state");
         switch (state) {
           case InitialState() || DataUpdateState():
             break;
           case SubmitSuccessState():
+            print("💕💕💕HACE EL POP💕💕💕 $state");
             GoRouter.of(context).pop();
+            // GoRouter.of(context).pushNamed("home");
             break;
           case SubmitErrorState():
             _showMyDialog(state.message);

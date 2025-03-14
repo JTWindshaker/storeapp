@@ -1,4 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:storeapp/app/core/domain/use_case/logout_use_case.dart';
 import 'package:storeapp/app/home/domain/use_case/delete_product_use_case.dart';
 import 'package:storeapp/app/home/domain/use_case/get_products_use_case.dart';
 import 'package:storeapp/app/home/presentation/bloc/home_event.dart';
@@ -8,13 +9,16 @@ import 'package:storeapp/app/home/presentation/model/product_model.dart';
 class HomeBloc extends Bloc<HomeEvent, HomeState> {
   final GetProductsUseCase getProductsUseCase;
   final DeleteProductUseCase deleteProductUseCase;
+  final LogoutUseCase logoutUseCase;
 
   HomeBloc({
     required this.getProductsUseCase,
     required this.deleteProductUseCase,
+    required this.logoutUseCase,
   }) : super(LoadingState()) {
     on<GetProductsEvent>(_getProductsEvent);
     on<DeleteProductEvent>(_deleteProductEvent);
+    on<LogoutEvent>(_logoutEvent);
   }
 
   void _getProductsEvent(
@@ -29,7 +33,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       emit(newState);
 
       final List<ProductModel> result = await getProductsUseCase.invoke();
-      // throw (Exception());
+
       if (result.isEmpty) {
         newState = EmptyState();
       } else {
@@ -52,18 +56,14 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     late HomeState newState;
 
     try {
-      // newState = LoadingState();
-      // emit(newState);
-
       final bool result = await deleteProductUseCase.invoke(event.id);
 
       if (result) {
-        // _getProductsEvent(GetProductsEvent(), emit);
         newState = LoadingState();
         emit(newState);
 
         final List<ProductModel> result = await getProductsUseCase.invoke();
-        // throw (Exception());
+
         if (result.isEmpty) {
           newState = EmptyState();
         } else {
@@ -79,8 +79,14 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         model: state.model,
         message: "Error al eliminar el producto",
       );
-
-      emit(newState);
+      print("😡 $e");
     }
+
+    emit(newState);
+  }
+
+  void _logoutEvent(LogoutEvent event, Emitter<HomeState> emit) async {
+    logoutUseCase.invoke();
+    emit(LogoutState());
   }
 }

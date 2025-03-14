@@ -13,7 +13,7 @@ final class EmptyState extends HomeState {
 
 final class LoadingState extends HomeState {
   final String message;
-  LoadingState({this.message = "Cargando Productos... "})
+  LoadingState({this.message = "Cargando Productos..."})
     : super(model: HomeModel(products: []));
 }
 
@@ -24,4 +24,8 @@ final class LoadDataState extends HomeState {
 final class HomeErrorState extends HomeState {
   final String message;
   HomeErrorState({required super.model, required this.message});
+}
+
+final class LogoutState extends HomeState {
+  LogoutState() : super(model: HomeModel(products: []));
 }

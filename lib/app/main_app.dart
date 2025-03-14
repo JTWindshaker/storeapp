@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:storeapp/app/form_product/presentation/pages/form_product_page.dart';
 import 'package:storeapp/app/home/presentation/pages/home_page.dart';
 import 'package:storeapp/app/login/presentation/pages/login_page.dart';
@@ -14,20 +15,44 @@ class MainApp extends StatelessWidget {
     final router = GoRouter(
       routes: [
         GoRoute(
-          path: "/login",
+          path: "/",
           name: "login",
-          builder: (_, _) => const LoginPage(),
+          redirect: (context, state) async {
+            final prefs = await SharedPreferences.getInstance();
+            final bool authenticated = prefs.getBool("login") ?? false;
+
+            if (authenticated) {
+              return "/home";
+            }
+
+            return null;
+          },
+          builder: (_, _) => LoginPage(),
         ),
         GoRoute(
           path: "/sign-up",
           name: "sign-up",
-          builder: (_, _) => const SignUpPage(),
+          builder: (_, _) => SignUpPage(),
         ),
-        GoRoute(path: "/", name: "home", builder: (_, _) => const HomePage()),
+        GoRoute(
+          path: "/home",
+          name: "home",
+          redirect: (context, state) async {
+            final prefs = await SharedPreferences.getInstance();
+            final bool authenticated = prefs.getBool("login") ?? false;
+
+            if (!authenticated) {
+              return "/";
+            }
+
+            return null;
+          },
+          builder: (_, _) => HomePage(),
+        ),
         GoRoute(
           path: "/form-product",
           name: "form-product",
-          builder: (_, _) => const FormProductPage(),
+          builder: (_, _) => FormProductPage(),
         ),
         GoRoute(
           path: "/form-product/:id",

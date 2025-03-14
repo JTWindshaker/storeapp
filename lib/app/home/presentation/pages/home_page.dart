@@ -7,34 +7,17 @@ import 'package:storeapp/app/home/presentation/bloc/home_event.dart';
 import 'package:storeapp/app/home/presentation/bloc/home_state.dart';
 import 'package:storeapp/app/home/presentation/model/product_model.dart';
 
-class HomePage extends StatefulWidget {
+class HomePage extends StatelessWidget {
   const HomePage({super.key});
 
-  @override
-  State<HomePage> createState() => _HomePageState();
-}
-
-class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return BlocProvider.value(
       value: DependencyInjection.serviceLocator.get<HomeBloc>(),
       child: Scaffold(
-        appBar: AppBar(
-          backgroundColor: Color(0xFFEF1D26),
-          title: Text(
-            "Listado de Productos",
-            style: TextStyle(color: Colors.white),
-          ),
-          actions: [
-            IconButton(
-              icon: Icon(Icons.logout, color: Colors.white),
-              onPressed: () {
-                GoRouter.of(context).pushReplacementNamed("login");
-              },
-            ),
-            SizedBox(width: 16.0),
-          ],
+        appBar: PreferredSize(
+          preferredSize: Size.fromHeight(60.0),
+          child: AppBarWidget(),
         ),
         body: ProductsListWidget(),
         floatingActionButton: FloatingActionButton(
@@ -46,13 +29,76 @@ class _HomePageState extends State<HomePage> {
             borderRadius: BorderRadius.circular(50),
           ),
           elevation: 8,
-          child: Icon(
-            Icons.add,
-            color: Colors.white,
-            size: 28,
-          ), // Ícono más visible
+          child: Icon(Icons.add, color: Colors.white, size: 28),
         ),
       ),
+    );
+  }
+}
+
+class AppBarWidget extends StatelessWidget {
+  const AppBarWidget({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final bloc = context.read<HomeBloc>();
+
+    return AppBar(
+      backgroundColor: Color(0xFFEF1D26),
+      title: Text(
+        "Listado de Productos",
+        style: TextStyle(color: Colors.white),
+      ),
+      actions: [
+        IconButton(
+          icon: Icon(Icons.logout, color: Colors.white),
+          onPressed: () async {
+            showDialog(
+              context: context,
+              barrierDismissible: false,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  title: const Text('Cerrar sesión!'),
+                  content: SingleChildScrollView(
+                    child: ListBody(
+                      children: <Widget>[Text("Está seguro de cerrar sesión?")],
+                    ),
+                  ),
+                  actions: <Widget>[
+                    TextButton(
+                      child: const Text('Cerrar'),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                    TextButton(
+                      child: const Text(
+                        "Ok",
+                        style: TextStyle(color: Colors.red),
+                      ),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                        bloc.add(LogoutEvent());
+                      },
+                    ),
+                  ],
+                );
+              },
+            );
+
+            // final prefs = await SharedPreferences.getInstance();
+            // prefs.setBool("login", false);
+
+            // // Verifica que el widget sigue montado antes de usar context para evitar un error.
+            // if (!context.mounted) {
+            //   return;
+            // }
+
+            // GoRouter.of(context).pushReplacementNamed("login");
+          },
+        ),
+        SizedBox(width: 16.0),
+      ],
     );
   }
 }
@@ -69,6 +115,7 @@ class _ProductsListWidgetState extends State<ProductsListWidget> {
   @override
   Widget build(BuildContext context) {
     final bloc = context.read<HomeBloc>();
+    print("😁😁😁😁PRODUCTS load😁😁😁😁");
     bloc.add(GetProductsEvent());
 
     // El block consumer es la fusión del bloc builder y listener
@@ -100,6 +147,10 @@ class _ProductsListWidgetState extends State<ProductsListWidget> {
                 );
               },
             );
+            break;
+          case LogoutState():
+            //Borra todas las pilas. Va desde cero
+            GoRouter.of(context).goNamed("login");
             break;
         }
       },

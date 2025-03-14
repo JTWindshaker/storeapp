@@ -1,11 +1,12 @@
-import 'dart:math';
-
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:storeapp/app/login/domain/entity/login_entity.dart';
 import 'package:storeapp/app/login/domain/repository/login_repository.dart';
 
 class LoginRepositoryImpl implements LoginRepository {
   @override
-  bool login(LoginEntity login) {
-    return Random().nextBool();
+  Future<bool> login(LoginEntity login) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool("login", true);
+    return true;
   }
 }

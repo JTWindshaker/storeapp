@@ -3,8 +3,7 @@ import 'package:storeapp/app/login/domain/repository/login_repository.dart';
 import 'package:storeapp/app/login/presentation/model/login_form_model.dart';
 
 class LoginUseCase {
-  
-final LoginRepository loginRepository;
+  final LoginRepository loginRepository;
 
   // LoginUseCase() {
   //   _loginRepository = LoginRepositoryImpl();
@@ -12,7 +11,7 @@ final LoginRepository loginRepository;
 
   LoginUseCase({required this.loginRepository});
 
-  bool invoke(LoginFormModel loginFormModel) {
+  Future<bool> invoke(LoginFormModel loginFormModel) {
     final LoginEntity data = loginFormModel.toEntity();
     return loginRepository.login(data);
   }
