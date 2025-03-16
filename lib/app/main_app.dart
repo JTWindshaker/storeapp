@@ -4,8 +4,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:storeapp/app/form_product/presentation/pages/form_product_page.dart';
 import 'package:storeapp/app/home/presentation/pages/home_page.dart';
 import 'package:storeapp/app/login/presentation/pages/login_page.dart';
-import 'package:storeapp/app/signup/presentation/pages/signup_page.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:storeapp/app/signup/presentation/pages/signup_page.dart';
+import 'package:storeapp/app/users/presentation/pages/users_page.dart';
 
 class MainApp extends StatelessWidget {
   const MainApp({super.key});
@@ -32,7 +33,7 @@ class MainApp extends StatelessWidget {
         GoRoute(
           path: "/sign-up",
           name: "sign-up",
-          builder: (_, _) => SignUpPage(),
+          builder: (_, _) => SignupPage(),
         ),
         GoRoute(
           path: "/home",
@@ -59,6 +60,11 @@ class MainApp extends StatelessWidget {
           name: "form-product-u",
           builder:
               (_, state) => FormProductPage(id: state.pathParameters["id"]),
+        ),
+        GoRoute(
+          path: "/users",
+          name: "users",
+          builder: (_, _) => UsersPage(),
         ),
       ],
     );

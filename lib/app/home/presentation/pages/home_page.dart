@@ -51,6 +51,10 @@ class AppBarWidget extends StatelessWidget {
       ),
       actions: [
         IconButton(
+          icon: Icon(Icons.people, color: Colors.white),
+          onPressed: () => GoRouter.of(context).pushReplacementNamed("users"),
+        ),
+        IconButton(
           icon: Icon(Icons.logout, color: Colors.white),
           onPressed: () async {
             showDialog(

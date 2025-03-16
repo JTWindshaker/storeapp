@@ -17,64 +17,81 @@ class LoginPage extends StatelessWidget {
     return BlocProvider.value(
       value: DependencyInjection.serviceLocator.get<LoginBloc>(),
       child: Scaffold(
-        resizeToAvoidBottomInset: false,
+        resizeToAvoidBottomInset: true,
         body: SafeArea(
           child: GestureDetector(
-            onTap:
-                () =>
-                    FocusScope.of(
-                      context,
-                    ).unfocus(), // Ocultar teclado al tocar fuera
-            child: Stack(
-              children: [
-                // Fondo con degradado
-                Positioned.fill(
-                  child: Container(
-                    decoration: const BoxDecoration(
-                      gradient: LinearGradient(
-                        colors: [Color(0xFFF28B82), Color(0xFFAEC6CF)],
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                      ),
-                    ),
-                  ),
+            // onTap: () => FocusScope.of(context).unfocus(),
+            child: SingleChildScrollView(
+              // keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+              child: Container(
+                padding: EdgeInsets.all(16.0),
+                child: Column(
+                  children: [
+                    HeaderLoginWidget(),
+                    const SizedBox(height: 16.0),
+                    BodyLoginWidget(),
+                    const SizedBox(height: 32.0),
+                    FooterLoginWidget(),
+                  ],
                 ),
-                Center(
-                  child: SingleChildScrollView(
-                    keyboardDismissBehavior:
-                        ScrollViewKeyboardDismissBehavior.onDrag,
-                    padding: EdgeInsets.only(
-                      left: 32,
-                      right: 32,
-                      bottom:
-                          MediaQuery.of(context).viewInsets.bottom +
-                          32, // Ajuste automático
-                    ),
-                    child: Card(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(16.0),
-                      ),
-                      elevation: 8.0,
-                      child: Padding(
-                        padding: const EdgeInsets.all(32.0),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            HeaderLoginWidget(),
-                            const SizedBox(height: 16.0),
-                            BodyLoginWidget(),
-                            const SizedBox(height: 32.0),
-                            FooterLoginWidget(),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
+              ),
             ),
           ),
         ),
+        // body: SafeArea(
+        //   child: GestureDetector(
+        //     // Ocultar teclado al tocar fuera
+        //     onTap: () => FocusScope.of(context).unfocus(),
+        //     child: Stack(
+        //       children: [
+        //         // Fondo con degradado
+        //         Positioned.fill(
+        //           child: Container(
+        //             decoration: const BoxDecoration(
+        //               gradient: LinearGradient(
+        //                 colors: [Color(0xFFF28B82), Color(0xFFAEC6CF)],
+        //                 begin: Alignment.topLeft,
+        //                 end: Alignment.bottomRight,
+        //               ),
+        //             ),
+        //           ),
+        //         ),
+        //         Center(
+        //           child: SingleChildScrollView(
+        //             keyboardDismissBehavior:
+        //                 ScrollViewKeyboardDismissBehavior.onDrag,
+        //             padding: EdgeInsets.only(
+        //               left: 32,
+        //               right: 32,
+        //               bottom:
+        //                   MediaQuery.of(context).viewInsets.bottom +
+        //                   32, // Ajuste automático
+        //             ),
+        //             child: Card(
+        //               shape: RoundedRectangleBorder(
+        //                 borderRadius: BorderRadius.circular(16.0),
+        //               ),
+        //               elevation: 8.0,
+        //               child: Padding(
+        //                 padding: const EdgeInsets.all(32.0),
+        //                 child: Column(
+        //                   mainAxisSize: MainAxisSize.min,
+        //                   children: [
+        //                     HeaderLoginWidget(),
+        //                     const SizedBox(height: 16.0),
+        //                     BodyLoginWidget(),
+        //                     const SizedBox(height: 32.0),
+        //                     FooterLoginWidget(),
+        //                   ],
+        //                 ),
+        //               ),
+        //             ),
+        //           ),
+        //         ),
+        //       ],
+        //     ),
+        //   ),
+        // ),
       ),
     );
   }
@@ -146,6 +163,9 @@ class _BodyLoginWidgetState extends State<BodyLoginWidget> with LoginMixin {
   Widget build(BuildContext context) {
     final bloc = context.read<LoginBloc>();
 
+    TextEditingController emailController = TextEditingController();
+    TextEditingController passwordController = TextEditingController();
+
     return BlocListener<LoginBloc, LoginState>(
       listener: (context, state) {
         switch (state) {
@@ -164,6 +184,9 @@ class _BodyLoginWidgetState extends State<BodyLoginWidget> with LoginMixin {
           final bool isValidForm =
               validateEmail(state.model.email) == null &&
               validatePassword(state.model.password) == null;
+
+          emailController.text = state.model.email;
+          passwordController.text = state.model.password;
 
           // if (state is LoginSuccessState) {
           //   WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -194,17 +217,15 @@ class _BodyLoginWidgetState extends State<BodyLoginWidget> with LoginMixin {
               children: [
                 TextFormField(
                   autovalidateMode: AutovalidateMode.onUserInteraction,
-                  initialValue: state.model.email,
+                  controller: emailController,
                   onChanged:
-                      (value) => setState(() {
-                        bloc.add(EmailChangedEvent(email: value));
-                      }),
+                      (value) => bloc.add(EmailChangedEvent(email: value)),
                   validator: validateEmail,
                   style: TextStyle(fontSize: 14),
                   decoration: const InputDecoration(
                     labelText: "Email",
                     prefixIcon: Icon(Icons.email, color: Color(0xFF6F6758)),
-                    // labelStyle: TextStyle(color: Color(0xFF6F6758)),
+                    hintText: "Email",
                     enabledBorder: UnderlineInputBorder(
                       borderSide: BorderSide(color: Color(0xFF6F6758)),
                     ),
@@ -216,15 +237,14 @@ class _BodyLoginWidgetState extends State<BodyLoginWidget> with LoginMixin {
 
                 TextFormField(
                   autovalidateMode: AutovalidateMode.onUserInteraction,
-                  // onChanged: (value) => keyForm.currentState?.validate(),
-                  initialValue: state.model.password,
+                  controller: passwordController,
                   onChanged:
-                      (value) => setState(() {
-                        bloc.add(PasswordChangedEvent(password: value));
-                      }),
+                      (value) =>
+                          bloc.add(PasswordChangedEvent(password: value)),
                   validator: validatePassword,
                   obscureText: !_showPassword,
                   style: TextStyle(fontSize: 14),
+
                   decoration: InputDecoration(
                     labelText: "Password",
                     prefixIcon: const Icon(
@@ -238,23 +258,26 @@ class _BodyLoginWidgetState extends State<BodyLoginWidget> with LoginMixin {
                     suffixIcon: IconButton(
                       icon: Icon(
                         _showPassword ? Icons.visibility : Icons.visibility_off,
-                        // color: const Color(0xFF6F6758),
                       ),
                       onPressed: togglePasswordVisibility,
                     ),
+                    hintText: "Password",
                   ),
+                  keyboardType: TextInputType.name,
                 ),
+
                 const SizedBox(height: 48.0),
                 ElevatedButton(
                   // onPressed: () => keyForm.currentState?.validate(),
-                  onPressed:
-                      isValidForm
-                          ? () {
-                            setState(() {
-                              bloc.add(SubmitEvent());
-                            });
-                          }
-                          : null,
+                  // onPressed:
+                  //     isValidForm
+                  //         ? () {
+                  //           setState(() {
+                  //             bloc.add(SubmitEvent());
+                  //           });
+                  //         }
+                  //         : null,
+                  onPressed: isValidForm ? () => bloc.add(SubmitEvent()) : null,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFFEF1D26), // Color principal
                     padding: const EdgeInsets.symmetric(vertical: 16.0),

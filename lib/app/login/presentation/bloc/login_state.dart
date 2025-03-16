@@ -7,7 +7,7 @@ sealed class LoginState {
 }
 
 final class InitialState extends LoginState {
-  InitialState() : super(model: LoginFormModel(email: "jose@gmail.com", password: "12345678")); // Borrar
+  InitialState() : super(model: LoginFormModel(email: "", password: ""));
 }
 
 final class DataUpdateState extends LoginState {

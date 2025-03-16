@@ -15,10 +15,21 @@ import 'package:storeapp/app/home/domain/repository/home_repository.dart';
 import 'package:storeapp/app/home/domain/use_case/delete_product_use_case.dart';
 import 'package:storeapp/app/home/domain/use_case/get_products_use_case.dart';
 import 'package:storeapp/app/home/presentation/bloc/home_bloc.dart';
+import 'package:storeapp/app/login/data/remote/services/login_service.dart';
 import 'package:storeapp/app/login/data/repository/login_repository_impl.dart';
 import 'package:storeapp/app/login/domain/repository/login_repository.dart';
 import 'package:storeapp/app/login/domain/use_case/login_use_case.dart';
 import 'package:storeapp/app/login/presentation/bloc/login_bloc.dart';
+import 'package:storeapp/app/signup/data/remote/services/signup_service.dart';
+import 'package:storeapp/app/signup/data/repository/signup_repository_imp.dart';
+import 'package:storeapp/app/signup/domain/repository/signup_repository.dart';
+import 'package:storeapp/app/signup/domain/use_case/register_user_use_case.dart';
+import 'package:storeapp/app/signup/presentation/bloc/signup_bloc.dart';
+import 'package:storeapp/app/users/data/remote/services/users_service.dart';
+import 'package:storeapp/app/users/data/repository/users_repository_impl.dart';
+import 'package:storeapp/app/users/domain/repository/users_repository.dart';
+import 'package:storeapp/app/users/domain/use_case/get_users_use_case.dart';
+import 'package:storeapp/app/users/presentation/bloc/users_bloc.dart';
 
 final class DependencyInjection {
   //Constructor privado
@@ -37,9 +48,11 @@ final class DependencyInjection {
     );
 
     // Inyección del Login
+    //Inyección del service
+    serviceLocator.registerFactory<LoginService>(() => LoginService());
     //Inyección del Repositorio
     serviceLocator.registerFactory<LoginRepository>(
-      () => LoginRepositoryImpl(),
+      () => LoginRepositoryImpl(loginService: serviceLocator.get()),
     );
 
     //Inyección del Caso de uso
@@ -85,6 +98,25 @@ final class DependencyInjection {
       ),
     );
 
+    // Inyección del Users
+    //Inyección del service
+    serviceLocator.registerFactory<UsersService>(() => UsersService());
+
+    //Inyección del Repositorio
+    serviceLocator.registerFactory<UsersRepository>(
+      () => UsersRepositoryImpl(usersService: serviceLocator.get()),
+    );
+
+    //Inyección del Caso de uso
+    serviceLocator.registerFactory<GetUsersUseCase>(
+      () => GetUsersUseCase(usersRepository: serviceLocator.get()),
+    );
+
+    //Inyección del Bloc
+    serviceLocator.registerFactory<UsersBloc>(
+      () => UsersBloc(getUsersUseCase: serviceLocator.get()),
+    );
+
     // Inyección del Form Product
     //Inyección del Repositorio
     serviceLocator.registerFactory<FormProductRepository>(
@@ -113,6 +145,25 @@ final class DependencyInjection {
         getProductUseCase: serviceLocator.get(),
         updateProductUseCase: serviceLocator.get(),
       ),
+    );
+
+    //Inyección del Signup
+    //Inyección del service
+    serviceLocator.registerFactory<SignupService>(() => SignupService());
+
+    //Inyección del Repositorio
+    serviceLocator.registerFactory<SignupRepository>(
+      () => SignupRepositoryImp(signupService: serviceLocator.get()),
+    );
+
+    //Inyección del Caso de uso
+    serviceLocator.registerFactory<RegisterUserUseCase>(
+      () => RegisterUserUseCase(signupRepository: serviceLocator.get()),
+    );
+
+    //Inyección del Bloc
+    serviceLocator.registerFactory<SignupBloc>(
+      () => SignupBloc(registerUserUseCase: serviceLocator.get()),
     );
   }
 }

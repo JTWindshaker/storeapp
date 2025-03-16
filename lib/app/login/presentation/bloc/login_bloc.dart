@@ -38,15 +38,23 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
   }
 
   void _submitEvent(SubmitEvent event, Emitter<LoginState> emit) async {
-    final bool result = await loginUseCase.invoke(state.model);
     late final LoginState newState;
 
-    if (result) {
+    try {
+      print('😍😍😍😍😍😍😍😍${state.model.email}😍😍😍😍😍😍😍😍');
+      print('😍😍😍😍😍😍😍😍${state.model.password}😍😍😍😍😍😍😍😍');
+      final result = await loginUseCase.invoke(state.model);
+      print('😍😍😍😍😍😍😍😍${result}😍😍😍😍😍😍😍😍');
+      if (result == null) {
+        throw Exception();
+      }
       newState = LoginSuccessState(model: state.model);
-    } else {
+    } catch (e) {
+      print('😍😍😍😍😍😍😍😍ERROR ERROR😍😍😍😍😍😍😍😍');
+      print('No user found for that email.');
       newState = LoginErrorState(
         model: state.model,
-        message: "Error al Iniciar Sesión",
+        message: "Error en el inicio de sesión",
       );
     }
 
